@@ -313,7 +313,7 @@ function updateUserStatus(index, newStatus) {
     loadAdminDashboard();
 }
 
-// Initial Run
-function renderMainCourses() {
-    // Basic screen initialization
-}
+// --- RUN SYSTEM AUTO INITIALIZER ---
+window.onload = function() {
+    loadAdminDashboard();
+};
