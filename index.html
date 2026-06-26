@@ -39,6 +39,7 @@
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; display: inline-block; margin-top: 15px; }
         .badge-req { background: var(--danger); }
         .badge-free { background: var(--success); }
+        .badge-pending { background: #d97706; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
@@ -52,6 +53,7 @@
 <body>
 
 <div class="container">
+    <!-- Header -->
     <header>
         <h2 onclick="showPage('main-dashboard')" style="cursor:pointer; color: var(--primary);">🚀 CG TS</h2>
         <div>
@@ -60,6 +62,7 @@
         </div>
     </header>
 
+    <!-- 1. MAIN DASHBOARD -->
     <div id="main-dashboard" class="page active-page">
         <h2>CG TS लर्निंग डैशबोर्ड में आपका स्वागत है</h2>
         <p style="color: #666; margin-top: 5px;">अपना पसंदीदा कोर्स चुनें और तैयारी शुरू करें।</p>
@@ -77,6 +80,7 @@
         </div>
     </div>
 
+    <!-- ADMIN LOGIN GATE -->
     <div id="admin-login-page" class="page">
         <button class="btn" onclick="showPage('main-dashboard')">← मुख्य डैशबोर्ड पर जाएं</button>
         <div class="card" style="max-width: 450px; margin: 20px auto; text-align: left; cursor: default;">
@@ -93,6 +97,7 @@
         </div>
     </div>
 
+    <!-- 2. STUDENT LOGIN / REGISTRATION -->
     <div id="login-page" class="page">
         <button class="btn" onclick="showPage('main-dashboard')">← पीछे जाएं</button>
         <div class="card" style="max-width: 450px; margin: 20px auto; text-align: left; cursor: default;">
@@ -107,7 +112,7 @@
                     <input type="password" id="login-password" placeholder="पासवर्ड डालें">
                 </div>
                 <button class="btn btn-primary" style="width:100%;" onclick="loginUser()">लॉगिन करें</button>
-                <p style="margin-top:15px; text-align:center;">अकाउंट नहीं है? <a href="#" onclick="toggleAuth(false); return false;">नया रजिस्ट्रेशन करें</a></p>
+                <p style="margin-top:15px; text-align:center;">अकौंट नहीं है? <a href="#" onclick="toggleAuth(false); return false;">नया रजिस्ट्रेशन करें</a></p>
             </div>
             <div id="register-form" style="display:none; margin-top: 15px;">
                 <div class="form-group">
@@ -128,11 +133,12 @@
         </div>
     </div>
 
+    <!-- 3. STUDENT DASHBOARD -->
     <div id="student-dashboard" class="page">
         <h2 id="student-welcome">नमस्ते, छात्र</h2>
         <div class="grid-2">
             <div class="card" onclick="openCourse('free')">
-                <h3>मुफ्त टेस्ट सीरीज़</h3>
+                <h3>муफ्त टेस्ट सीरीज़</h3>
                 <p style="margin-top:10px; color:#666;">पहले की तरह बिल्कुल मुफ्त टेस्ट एक्सेस करें।</p>
             </div>
             <div class="card" onclick="openCourse('recruitment_secured')">
@@ -142,18 +148,21 @@
         </div>
     </div>
 
+    <!-- 4. SUBJECTS PAGE -->
     <div id="subjects-page" class="page">
         <button class="btn" onclick="goBackFromSubjects()">← पीछे जाएं</button>
         <h2 style="margin-top:20px;" id="subject-page-title">विषय (Subjects)</h2>
         <div class="grid-3" id="subjects-grid"></div>
     </div>
 
+    <!-- 5. TESTS PAGE -->
     <div id="tests-page" class="page">
         <button class="btn" onclick="showPage('subjects-page')">← विषयों पर लौटें</button>
         <h2 style="margin-top:20px;" id="test-page-title">उपलब्ध टेस्ट बॉक्स</h2>
         <div class="grid-3" id="tests-grid"></div>
     </div>
 
+    <!-- 6. QUIZ SCREEN -->
     <div id="quiz-page" class="page">
         <div class="card" style="text-align: left; cursor: default;">
             <h3 id="quiz-question-title">प्रश्न यहाँ दिखाई देगा?</h3>
@@ -164,6 +173,7 @@
         </div>
     </div>
 
+    <!-- 7. RESULT & SUMMARY PAGE -->
     <div id="result-page" class="page">
         <div class="card" style="cursor: default;">
             <h2 style="color: var(--success);">टेस्ट सफलतापूर्वक पूरा हुआ!</h2>
@@ -178,12 +188,14 @@
         </div>
     </div>
 
+    <!-- 8. ADMIN PANEL -->
     <div id="admin-panel" class="page">
         <div style="display:flex; justify-content: space-between;">
             <button class="btn btn-danger" onclick="showPage('main-dashboard')">← एडमिन पैनल से बाहर निकलें</button>
-            <button class="btn btn-primary" onclick="toggleAdminSettings()">⚙️ एडimen ID/पासवर्ड बदलें</button>
+            <button class="btn btn-primary" onclick="toggleAdminSettings()">⚙️ एडमिन ID/पासवर्ड बदलें</button>
         </div>
 
+        <!-- Admin Settings Form -->
         <div id="admin-settings-box" class="card" style="display:none; text-align:left; margin-top:15px; max-width:500px; cursor:default;">
             <h3>एडमिन क्रेडेंशियल अपडेट करें</h3>
             <div class="form-group" style="margin-top:10px;">
@@ -200,6 +212,7 @@
         <h2 style="margin-top:20px;">🔧 सिस्टम एडमिन कमांड सेंटर (CG TS)</h2>
         
         <div class="grid-2">
+            <!-- Subject Management -->
             <div class="card" style="text-align:left; cursor: default;">
                 <h3>नया विषय (Subject) जोड़ें</h3>
                 <div class="form-group" style="margin-top: 10px;">
@@ -216,6 +229,7 @@
                 <button class="btn btn-primary" onclick="adminCreateSubject()">विषय जोड़ें</button>
             </div>
 
+            <!-- Simplified Test Creator Box -->
             <div class="card" style="text-align:left; cursor: default;">
                 <h3>विषय के आधार पर नया टेस्ट बॉक्स बनाएं</h3>
                 <div class="form-group" style="margin-top: 10px;">
@@ -224,33 +238,68 @@
                 </div>
                 <div class="form-group">
                     <label>टेस्ट का नाम</label>
-                    <input type="text" id="adm-test-name" placeholder="उदा. मॉक टेस्ट - 05">
+                    <input type="text" id="adm-test-name" placeholder="उदा. मॉक टेस्ट - 02">
                 </div>
                 <div class="form-group">
                     <label>अपलोड का प्रकार (Question Type)</label>
                     <select id="adm-upload-type" onchange="toggleUploadFields()">
-                        <option value="code">Code/JSON Format (ऑटोमेटिक जनरेट)</option>
+                        <option value="code">सरल टेक्स्ट फॉर्मेट (आसान अपलोड)</option>
                         <option value="link">Direct Web Link (वेब लिंक)</option>
                     </select>
                 </div>
 
+                <!-- Link Option Input -->
                 <div class="form-group" id="upload-link-group" style="display:none;">
                     <label>टेस्ट का वेब लिंक (URL Link)</label>
                     <input type="text" id="adm-test-link" placeholder="https://example.com/quiz">
                 </div>
 
-                <div class="form-group" id="upload-code-group">
-                    <label>प्रश्न का कोड बॉक्स Format (नीचे दिए गए नियम अनुसार पेस्ट करें)</label>
-                    <textarea id="adm-test-code" rows="5" placeholder='{"q": "प्रश्न क्या है?", "o": ["A", "B", "C", "D"], "a": 0, "exp": "व्याख्या"}'></textarea>
-                    <small style="color: #666; display:block; margin-top:5px;">💡 Format: <code>{"q":"सवाल","o":["विकल्प1","विकल्प2","विकल्प3","विकल्प4"],"a":0,"exp":"व्याख्या"}</code> (Note: "a" में 0=पहला विकल्प, 1=दूसरा, आदि)</small>
+                <!-- Fixed Simple Text Question Area -->
+                <div id="upload-code-group">
+                    <div class="form-group">
+                        <label>प्रश्न (Question)</label>
+                        <input type="text" id="plain-q" placeholder="सवाल यहाँ लिखें">
+                    </div>
+                    <div class="form-group" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div>
+                            <label>विकल्प A</label>
+                            <input type="text" id="plain-o1" placeholder="Option A">
+                        </div>
+                        <div>
+                            <label>विकल्प B</label>
+                            <input type="text" id="plain-o2" placeholder="Option B">
+                        </div>
+                        <div>
+                            <label>विकल्प C</label>
+                            <input type="text" id="plain-o3" placeholder="Option C">
+                        </div>
+                        <div>
+                            <label>विकल्प D</label>
+                            <input type="text" id="plain-o4" placeholder="Option D">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>सही विकल्प का चयन करें</label>
+                        <select id="plain-ans">
+                            <option value="0">विकल्प A सही है</option>
+                            <option value="1">विकल्प B सही है</option>
+                            <option value="2">विकल्प C सही है</option>
+                            <option value="3">विकल्प D सही है</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>उत्तर की व्याख्या (Explanation)</label>
+                        <textarea id="plain-exp" rows="2" placeholder="यह उत्तर क्यों सही है उसकी व्याख्या..."></textarea>
+                    </div>
                 </div>
 
-                <button class="btn btn-success" onclick="adminCreateTest()">नया टेस्ट लाइव करें</button>
+                <button class="btn btn-success" style="width:100%;" onclick="adminCreateTest()">🚀 नया टेस्ट लाइव सेव करें</button>
             </div>
         </div>
 
+        <!-- Student Approval Database Table -->
         <div class="card" style="margin-top:20px; text-align:left; cursor: default;">
-            <h3>छात्र यूजर मैनेजमेंट डेटाबेस (Approval/Block)</h3>
+            <h3>👤 छात्र यूजर मैनेजमेंट डेटाबेस (बिना अप्रूवल छात्र लॉगिन लॉक रहेगा)</h3>
             <table>
                 <thead>
                     <tr>
@@ -268,10 +317,10 @@
 </div>
 
 <script>
-    // --- APP LOCALSTORAGE CONFIG ---
+    // --- APP CONFIGURATION & STORAGE ---
     let adminCreds = JSON.parse(localStorage.getItem('cgts_admin_creds')) || { id: 'admin', pass: 'admin123' };
     
-    let appData = JSON.parse(localStorage.getItem('lms_data_cgts_v2')) || {
+    let appData = JSON.parse(localStorage.getItem('lms_data_cgts_v3')) || {
         courses: [
             { id: 'free', name: 'Free Test Series', loginRequired: false, status: 'visible' },
             { id: 'recruitment', name: 'Assistant Teacher Recruitment', loginRequired: true, status: 'visible' }
@@ -291,10 +340,10 @@
     let activeTest = null;
 
     function saveToStorage() {
-        localStorage.setItem('lms_data_cgts_v2', JSON.stringify(appData));
+        localStorage.setItem('lms_data_cgts_v3', JSON.stringify(appData));
     }
 
-    // --- SECURITY PANEL GATE ---
+    // --- SECURITY DOOR PANEL ---
     function checkAdminAccess() {
         showPage('admin-login-page');
     }
@@ -344,13 +393,7 @@
         document.getElementById('upload-code-group').style.display = type === 'code' ? 'block' : 'none';
     }
 
-    // --- USER LOGIN/REGISTRATION ---
-    function toggleAuth(isLogin) {
-        document.getElementById('auth-title').innerText = isLogin ? "छात्र लॉगिन" : "नया छात्र रजिस्ट्रेशन";
-        document.getElementById('login-form').style.display = isLogin ? "block" : "none";
-        document.getElementById('register-form').style.display = isLogin ? "none" : "block";
-    }
-
+     // --- USER REGISTRATION & STRICT MANUAL APPROVAL SYSTEM ---
     function registerUser() {
         let name = document.getElementById('reg-name').value;
         let mobile = document.getElementById('reg-mobile').value;
@@ -358,9 +401,10 @@
 
         if(!name || !mobile || !pass) return alert("सभी जानकारी भरना अनिवार्य है!");
 
-        appData.users.push({ name, mobile, pass, status: 'approved' });
+        // CRITICAL BUG FIX: Set default status to 'PENDING' so user cannot log in directly
+        appData.users.push({ name, mobile, pass, status: 'pending' });
         saveToStorage();
-        alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
+        alert("आपका रजिस्ट्रेशन सुरक्षित हो गया है! जब तक एडमिन इसे अप्रूव (Approve) नहीं करेंगे, आप लॉगिन नहीं कर पाएंगे।");
         toggleAuth(true);
     }
 
@@ -370,7 +414,14 @@
 
         let user = appData.users.find(u => u.mobile === mobile && u.pass === pass);
         if(!user) return alert("गलत मोबाइल नंबर या पासवर्ड!");
-        if(user.status === 'blocked' || user.status === 'rejected') return alert("आपका अकाउंट एडमिन द्वारा ब्लॉक कर दिया गया है।");
+        
+        // Block condition if status is pending or blocked
+        if(user.status === 'pending') {
+            return alert("❌ आपका अकाउंट अभी 'पेंडिंग' है। कृपया एडमिन द्वारा अप्रूवल मिलने का इंतजार करें!");
+        }
+        if(user.status === 'blocked' || user.status === 'rejected') {
+            return alert("❌ आपका अकाउंट एडमिन द्वारा ब्लॉक या रिजेक्ट कर दिया गया है।");
+        }
 
         currentUser = user;
         document.getElementById('logout-btn').style.display = "block";
@@ -384,7 +435,7 @@
         showPage('main-dashboard');
     }
 
-    // --- FLOW MANAGEMENT ---
+    // --- DASHBOARD COURSES & SUBJECTS FLOW ---
     function openCourse(courseId) {
         if(courseId === 'recruitment' && !currentUser) {
             showPage('login-page');
@@ -481,30 +532,29 @@
         sec.style.display = sec.style.display === "none" ? "block" : "none";
     }
 
-    // --- ADMIN BUSINESS LOGIC ---
+    // --- ADMIN DASHBOARD & WORKFLOWS ---
     function loadAdminDashboard() {
-        // Dropdown populate for subjects
         let subSelect = document.getElementById('adm-test-subject');
         subSelect.innerHTML = "";
         appData.subjects.forEach(s => {
             subSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
         });
 
-        // User table loader
         let tBody = document.getElementById('admin-student-table');
         tBody.innerHTML = "";
         if(appData.users.length === 0) {
             tBody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>कोई छात्र रिकॉर्ड नहीं मिला।</td></tr>";
         } else {
             appData.users.forEach((u, i) => {
+                let badgeClass = u.status === 'pending' ? 'badge-pending' : (u.status === 'approved' ? 'badge-free' : 'badge-req');
                 tBody.innerHTML += `
                     <tr>
                         <td>${u.name}</td>
                         <td>${u.mobile}</td>
-                        <td><span class="badge" style="background:#4f46e5; margin:0;">${u.status.toUpperCase()}</span></td>
+                        <td><span class="badge ${badgeClass}" style="margin:0;">${u.status.toUpperCase()}</span></td>
                         <td>
-                            <button class="btn btn-success" style="padding:4px 8px; font-size:12px;" onclick="updateUserStatus(${i}, 'approved')">Approve</button>
-                            <button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="updateUserStatus(${i}, 'blocked')">Block</button>
+                            <button class="btn btn-success" style="padding:4px 8px; font-size:12px;" onclick="updateUserStatus(${i}, 'approved')">Approve (सहमति)</button>
+                            <button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="updateUserStatus(${i}, 'blocked')">Block (रोकें)</button>
                         </td>
                     </tr>`;
                 });
@@ -524,12 +574,14 @@
         loadAdminDashboard();
     }
 
+    // NEW CLEAN QUESTION AND BOX UPDATER
     function adminCreateTest() {
         let subId = document.getElementById('adm-test-subject').value;
         let testName = document.getElementById('adm-test-name').value;
         let uploadType = document.getElementById('adm-upload-type').value;
 
         if(!testName) return alert("टेस्ट का नाम दर्ज करें!");
+        if(!subId) return alert("कृपया पहले एक विषय बनाएं!");
 
         let newTestObj = { id: 'test_' + Date.now(), subId: subId, name: testName, type: uploadType };
 
@@ -538,24 +590,37 @@
             if(!linkVal) return alert("कृपया वेब लिंक पेस्ट करें!");
             newTestObj.link = linkVal;
         } else {
-            let codeVal = document.getElementById('adm-test-code').value;
-            try {
-                let parsed = JSON.parse(codeVal);
-                newTestObj.q = parsed.q;
-                newTestObj.o = parsed.o;
-                newTestObj.a = parseInt(parsed.a);
-                newTestObj.exp = parsed.exp;
-            } catch(e) {
-                return alert("गलत कोड फ़ॉर्मेट! कृपया कोड बॉक्स के नियमों का पालन करें।");
+            // Fetch Plain Text values securely
+            let q = document.getElementById('plain-q').value;
+            let o1 = document.getElementById('plain-o1').value;
+            let o2 = document.getElementById('plain-o2').value;
+            let o3 = document.getElementById('plain-o3').value;
+            let o4 = document.getElementById('plain-o4').value;
+            let ans = parseInt(document.getElementById('plain-ans').value);
+            let exp = document.getElementById('plain-exp').value;
+
+            if(!q || !o1 || !o2 || !o3 || !o4) {
+                return alert("कृपया प्रश्न और सभी 4 विकल्प भरें!");
             }
+
+            newTestObj.q = q;
+            newTestObj.o = [o1, o2, o3, o4];
+            newTestObj.a = ans;
+            newTestObj.exp = exp || "कोई व्याख्या उपलब्ध नहीं है।";
         }
 
         appData.tests.push(newTestObj);
         saveToStorage();
-        alert("बधाई हो! नया टेस्ट ऑटोमेटिक अपडेट हो गया है।");
+        alert("बधाई हो! नया टेस्ट लाइव अपडेट हो गया है।");
+        
+        // Reset inputs
         document.getElementById('adm-test-name').value = "";
-        document.getElementById('adm-test-code').value = "";
-        document.getElementById('adm-test-link').value = "";
+        document.getElementById('plain-q').value = "";
+        document.getElementById('plain-o1').value = "";
+        document.getElementById('plain-o2').value = "";
+        document.getElementById('plain-o3').value = "";
+        document.getElementById('plain-o4').value = "";
+        document.getElementById('plain-exp').value = "";
     }
 
     function updateUserStatus(index, newStatus) {
