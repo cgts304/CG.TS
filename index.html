@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CG TS - मुख्य डैशबोर्ड</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h2 onclick="showPage('main-dashboard')" style="cursor:pointer; color: var(--primary);">🚀 CG TS</h2>
+        <div>
+            <button class="btn btn-primary" onclick="checkAdminAccess()">🔧 एडमिन पैनल (Admin)</button>
+            <button class="btn btn-danger" id="logout-btn" style="display:none;" onclick="logoutUser()">लॉगआउट</button>
+        </div>
+    </header>
+
+    <div id="main-dashboard" class="page active-page">
+        <h2>CG TS लर्निंग डैशबोर्ड में आपका स्वागत है</h2>
+        <p style="color: #666; margin-top: 5px;">अपना पसंदीदा कोर्स चुनें और तैयारी शुरू करें।</p>
+        <div class="grid-2" id="courses-container">
+            <div class="card" onclick="openCourse('free')">
+                <h3>मुफ्त टेस्ट सीरीज़ (Free Test Series)</h3>
+                <p style="margin-top:10px; color:#666;">बिना किसी लॉगिन के मुफ्त टेस्ट प्राप्त करें।</p>
+                <span class="badge badge-free">FREE</span>
+            </div>
+            <div class="card" onclick="openCourse('recruitment')">
+                <h3>सहायक शिक्षक भर्ती (Assistant Teacher)</h3>
+                <p style="margin-top:10px; color:#666;">सरकारी शिक्षक भर्ती की तैयारी करें।</p>
+                <span class="badge badge-req">लॉगिन अनिवार्य</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-login-page" class="page">
+        <button class="btn" onclick="showPage('main-dashboard')">← मुख्य डैशबोर्ड पर जाएं</button>
+        <div class="card" style="max-width: 450px; margin: 20px auto; text-align: left; cursor: default;">
+            <h2>सुरक्षित एडमिन लॉगिन</h2>
+            <div class="form-group" style="margin-top:15px;">
+                <label>एडमिन आईडी (Admin ID)</label>
+                <input type="text" id="adm-login-id" placeholder="ID दर्ज करें">
+            </div>
+            <div class="form-group">
+                <label>पासवर्ड (Password)</label>
+                <input type="password" id="adm-login-pass" placeholder="पासवर्ड दर्ज करें">
+            </div>
+            <button class="btn btn-danger" style="width:100%;" onclick="verifyAdminLogin()">लॉगिन करें</button>
+        </div>
+    </div>
+
+    <div id="login-page" class="page">
+        <button class="btn" onclick="showPage('main-dashboard')">← पीछे जाएं</button>
+        <div class="card" style="max-width: 450px; margin: 20px auto; text-align: left; cursor: default;">
+            <h2 id="auth-title">छात्र लॉगिन</h2>
+            <div id="login-form" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label>मोबाइल नंबर</label>
+                    <input type="text" id="login-mobile" placeholder="मोबाइल नंबर डालें">
+                </div>
+                <div class="form-group">
+                    <label>पासवर्ड</label>
+                    <input type="password" id="login-password" placeholder="पासवर्ड डालें">
+                </div>
+                <button class="btn btn-primary" style="width:100%;" onclick="loginUser()">लॉगिन करें</button>
+                <p style="margin-top:15px; text-align:center;">अकाउंट नहीं है? <a href="#" onclick="toggleAuth(false); return false;">नया रजिस्ट्रेशन करें</a></p>
+            </div>
+            <div id="register-form" style="display:none; margin-top: 15px;">
+                <div class="form-group">
+                    <label>पूरा नाम</label>
+                    <input type="text" id="reg-name" placeholder="अपना नाम लिखें">
+                </div>
+                <div class="form-group">
+                    <label>मोबाइल नंबर</label>
+                    <input type="text" id="reg-mobile" placeholder="अपना मोबाइल नंबर डालें">
+                </div>
+                <div class="form-group">
+                    <label>पासवर्ड बनाएं</label>
+                    <input type="password" id="reg-password" placeholder="नया पासवर्ड सोचें">
+                </div>
+                <button class="btn btn-success" style="width:100%;" onclick="registerUser()">रजिस्टर करें</button>
+                <p style="margin-top:15px; text-align:center;">पहले से अकाउंट है? <a href="#" onclick="toggleAuth(true); return false;">लॉगिन करें</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="student-dashboard" class="page">
+        <h2 id="student-welcome">नमस्ते, छात्र</h2>
+        <div class="grid-2">
+            <div class="card" onclick="openCourse('free')">
+                <h3>मुफ्त टेस्ट सीरीज़</h3>
+                <p style="margin-top:10px; color:#666;">पहले की तरह बिल्कुल मुफ्त test access करें।</p>
+            </div>
+            <div class="card" onclick="openCourse('recruitment_secured')">
+                <h3>सहायक शिक्षक भर्ती (प्रीमियम)</h3>
+                <p style="margin-top:10px; color:#666;">आपका अनलॉक्ड शिक्षक भर्ती कंटेंट यहाँ है।</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="subjects-page" class="page">
+        <button class="btn" onclick="goBackFromSubjects()">← पीछे जाएं</button>
+        <h2 style="margin-top:20px;" id="subject-page-title">विषय (Subjects)</h2>
+        <div class="grid-3" id="subjects-grid"></div>
+    </div>
+
+    <div id="tests-page" class="page">
+        <button class="btn" onclick="showPage('subjects-page')">← विषयों पर लौटें</button>
+        <h2 style="margin-top:20px;" id="test-page-title">उपलब्ध टेस्ट बॉक्स</h2>
+        <div class="grid-3" id="tests-grid"></div>
+    </div>
+
+    <div id="quiz-page" class="page">
+        <div class="card" style="text-align: left; cursor: default;">
+            <h3 id="quiz-question-title">प्रश्न यहाँ दिखाई देगा?</h3>
+            <div id="options-container" style="margin-top: 15px;"></div>
+            <div style="margin-top:20px;">
+                <button class="btn btn-success" onclick="submitQuiz()">टेस्ट सबमिट करें</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-page" class="page">
+        <div class="card" style="cursor: default;">
+            <h2 style="color: var(--success);">टेस्ट सफलतापूर्वक पूरा हुआ!</h2>
+            <h3 style="margin:20px 0;" id="score-text">आपका स्कोर: 0/0</h3>
+            <button class="btn btn-primary" onclick="toggleSummary()">उत्तर की व्याख्या / समरी देखें</button>
+            <button class="btn" style="background:#6b7280; color:white;" onclick="showPage('main-dashboard')">डैशबोर्ड पर जाएं</button>
+            
+            <div id="summary-section" style="display:none; text-align:left; margin-top:30px; border-top:2px dashed #ccc; padding-top:20px;">
+                <h3>प्रश्न पत्र समीक्षा (Summary)</h3>
+                <div id="summary-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="page">
+        <div style="display:flex; justify-content: space-between;">
+            <button class="btn btn-danger" onclick="showPage('main-dashboard')">← एडमिन पैनल से बाहर निकलें</button>
+            <button class="btn btn-primary" onclick="toggleAdminSettings()">⚙️ एडमिन ID/पासवर्ड बदलें</button>
+        </div>
+
+        <div id="admin-settings-box" class="card" style="display:none; text-align:left; margin-top:15px; max-width:500px; cursor:default;">
+            <h3>एडमिन क्रेडेंशियल अपडेट करें</h3>
+            <div class="form-group" style="margin-top:10px;">
+                <label>नया एडमिन आईडी</label>
+                <input type="text" id="new-admin-id">
+            </div>
+            <div class="form-group">
+                <label>नया पासवर्ड</label>
+                <input type="password" id="new-admin-pass">
+            </div>
+            <button class="btn btn-success" onclick="updateAdminCredentials()">क्रेडेंशियल सेव करें</button>
+        </div>
+
+        <h2 style="margin-top:20px;">🔧 सिस्टम एडमिन कमांड सेंटर (CG TS)</h2>
+        
+        <div class="grid-2">
+            <div class="card" style="text-align:left; cursor: default;">
+                <h3>नया विषय (Subject) जोड़ें</h3>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>कोर्स चुनें</label>
+                    <select id="adm-sub-course">
+                        <option value="free">Free Test Series</option>
+                        <option value="recruitment">Assistant Teacher Recruitment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>विषय का नाम</label>
+                    <input type="text" id="adm-sub-name" placeholder="उदा. छत्तीसगढ़ सामान्य ज्ञान">
+                </div>
+                <button class="btn btn-primary" onclick="adminCreateSubject()">विषय जोड़ें</button>
+            </div>
+
+            <div class="card" style="text-align:left; cursor: default;">
+                <h3>विषय के आधार पर नया टेस्ट बॉक्स बनाएं</h3>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>विषय (Subject) चुनें</label>
+                    <select id="adm-test-subject"></select>
+                </div>
+                <div class="form-group">
+                    <label>टेस्ट का नाम</label>
+                    <input type="text" id="adm-test-name" placeholder="उदा. मॉक टेस्ट - 02">
+                </div>
+                <div class="form-group">
+                    <label>अपलोड का प्रकार (Question Type)</label>
+                    <select id="adm-upload-type" onchange="toggleUploadFields()">
+                        <option value="code">सरल टेक्स्ट फॉर्मेट (आसान अपलोड)</option>
+                        <option value="link">Direct Web Link (वेब लिंक)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="upload-link-group" style="display:none;">
+                    <label>टेस्ट का वेब लिंक (URL Link)</label>
+                    <input type="text" id="adm-test-link" placeholder="https://example.com/quiz">
+                </div>
+
+                <div id="upload-code-group">
+                    <div class="form-group">
+                        <label>प्रश्न (Question)</label>
+                        <input type="text" id="plain-q" placeholder="सवाल यहाँ लिखें">
+                    </div>
+                    <div class="form-group" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div>
+                            <label>विकल्प A</label>
+                            <input type="text" id="plain-o1" placeholder="Option A">
+                        </div>
+                        <div>
+                            <label>विकल्प B</label>
+                            <input type="text" id="plain-o2" placeholder="Option B">
+                        </div>
+                        <div>
+                            <label>विकल्प C</label>
+                            <input type="text" id="plain-o3" placeholder="Option C">
+                        </div>
+                        <div>
+                            <label>विकल्प D</label>
+                            <input type="text" id="plain-o4" placeholder="Option D">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>सही विकल्प का चयन करें</label>
+                        <select id="plain-ans">
+                            <option value="0">विकल्प A सही है</option>
+                            <option value="1">विकल्प B सही है</option>
+                            <option value="2">विकल्प C सही है</option>
+                            <option value="3">विकल्प D सही है</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>उत्तर की व्याख्या (Explanation)</label>
+                        <textarea id="plain-exp" rows="2" placeholder="यह उत्तर क्यों सही है उसकी व्याख्या..."></textarea>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" style="width:100%;" onclick="adminCreateTest()">🚀 नया टेस्ट लाइव सेव करें</button>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:20px; text-align:left; cursor: default;">
+            <h3>👤 छात्र यूजर मैनेजमेंट डेटाबेस (बिना अप्रूवल छात्र लॉगिन लॉक रहेगा)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>नाम</th>
+                        <th>मोबाइल नंबर</th>
+                        <th>स्थिति (Status)</th>
+                        <th>कार्रवाई (Actions)</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-student-table"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
