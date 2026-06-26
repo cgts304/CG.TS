@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CG TS - मुख्य डैशबोर्ड</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--light); color: var(--dark); padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2, h3, h4 { color: var(--dark); }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; text-decoration: none; display: inline-block; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
+        
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); text-align: center; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border-top: 5px solid var(--primary); position: relative; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+        
+        .page { display: none; }
+        .active-page { display: block; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; display: inline-block; margin-top: 15px; }
+        .badge-req { background: var(--danger); }
+        .badge-free { background: var(--success); }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: var(--dark); color: white; }
+        
+        .option-box { display: block; background: #f9fafb; padding: 15px; margin: 10px 0; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: left; }
+        .option-box:hover { background: #eff6ff; border-color: var(--primary); }
+        .option-box input { margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h2 onclick="showPage('main-dashboard')" style="cursor:pointer; color: var(--primary);">🚀 CG TS</h2>
+        <div>
+            <button class="btn btn-primary" onclick="checkAdminAccess()">🔧 एडमिन पैनल (Admin)</button>
+            <button class="btn btn-danger" id="logout-btn" style="display:none;" onclick="logoutUser()">लॉगआउट</button>
+        </div>
+    </header>
+
+    <div id="main-dashboard" class="page active-page">
+        <h2>CG TS लर्निंग डैशबोर्ड में आपका स्वागत है</h2>
+        <p style="color: #666; margin-top: 5px;">अपना पसंदीदा कोर्स चुनें और तैयारी शुरू करें।</p>
+        <div class="grid-2" id="courses-container">
+            <div class="card" onclick="openCourse('free')">
+                <h3>मुफ्त टेस्ट सीरीज़ (Free Test Series)</h3>
+                <p style="margin-top:10px; color:#666;">बिना किसी लॉगिन के मुफ्त टेस्ट प्राप्त करें।</p>
+                <span class="badge badge-free">FREE</span>
+            </div>
+            <div class="card" onclick="openCourse('recruitment')">
+                <h3>सहायक शिक्षक भर्ती (Assistant Teacher)</h3>
+                <p style="margin-top:10px; color:#666;">सरकारी शिक्षक भर्ती की तैयारी करें।</p>
+                <span class="badge badge-req">लॉगिन अनिवार्य</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-login-page" class="page">
+        <button class="btn" onclick="showPage('main-dashboard')">← मुख्य डैशबोर्ड पर जाएं</button>
+        <div class="card" style="max-width: 450px; margin: 20px auto; text-align: left; cursor: default;">
+            <h2>सुरक्षित एडमिन लॉगिन</h2>
+            <div class="form-group" style="margin-top:15px;">
+                <label>एडमिन आईडी (Admin ID)</label>
+                <input type="text" id="adm-login-id" placeholder="ID दर्ज करें">
+            </div>
+            <div class="form-group">
+                <label>पासवर्ड (Password)</label>
+                <input type="password" id="adm-login-pass" placeholder="पासवर्ड दर्ज करें">
+            </div>
+            <button class="btn btn-danger" style="width:100%;" onclick="verifyAdminLogin()">लॉगिन करें</button>
+        </div>
+    </div>
+
+    <div id="login-page" class="page">
+        <button class="btn" onclick="showPage('main-dashboard')">← पीछे जाएं</button>
+        <div class="card" style="max-width: 450px; margin: 20px auto; text-align: left; cursor: default;">
+            <h2 id="auth-title">छात्र लॉगिन</h2>
+            <div id="login-form" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label>मोबाइल नंबर</label>
+                    <input type="text" id="login-mobile" placeholder="मोबाइल नंबर डालें">
+                </div>
+                <div class="form-group">
+                    <label>पासवर्ड</label>
+                    <input type="password" id="login-password" placeholder="पासवर्ड डालें">
+                </div>
+                <button class="btn btn-primary" style="width:100%;" onclick="loginUser()">लॉगिन करें</button>
+                <p style="margin-top:15px; text-align:center;">अकाउंट नहीं है? <a href="#" onclick="toggleAuth(false); return false;">नया रजिस्ट्रेशन करें</a></p>
+            </div>
+            <div id="register-form" style="display:none; margin-top: 15px;">
+                <div class="form-group">
+                    <label>पूरा नाम</label>
+                    <input type="text" id="reg-name" placeholder="अपना नाम लिखें">
+                </div>
+                <div class="form-group">
+                    <label>मोबाइल नंबर</label>
+                    <input type="text" id="reg-mobile" placeholder="अपना मोबाइल नंबर डालें">
+                </div>
+                <div class="form-group">
+                    <label>पासवर्ड बनाएं</label>
+                    <input type="password" id="reg-password" placeholder="नया पासवर्ड सोचें">
+                </div>
+                <button class="btn btn-success" style="width:100%;" onclick="registerUser()">रजिस्टर करें</button>
+                <p style="margin-top:15px; text-align:center;">पहले से अकाउंट है? <a href="#" onclick="toggleAuth(true); return false;">लॉगिन करें</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="student-dashboard" class="page">
+        <h2 id="student-welcome">नमस्ते, छात्र</h2>
+        <div class="grid-2">
+            <div class="card" onclick="openCourse('free')">
+                <h3>मुफ्त टेस्ट सीरीज़</h3>
+                <p style="margin-top:10px; color:#666;">पहले की तरह बिल्कुल मुफ्त टेस्ट एक्सेस करें।</p>
+            </div>
+            <div class="card" onclick="openCourse('recruitment_secured')">
+                <h3>सहायक शिक्षक भर्ती (प्रीमियम)</h3>
+                <p style="margin-top:10px; color:#666;">आपका अनलॉक्ड शिक्षक भर्ती कंटेंट यहाँ है।</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="subjects-page" class="page">
+        <button class="btn" onclick="goBackFromSubjects()">← पीछे जाएं</button>
+        <h2 style="margin-top:20px;" id="subject-page-title">विषय (Subjects)</h2>
+        <div class="grid-3" id="subjects-grid"></div>
+    </div>
+
+    <div id="tests-page" class="page">
+        <button class="btn" onclick="showPage('subjects-page')">← विषयों पर लौटें</button>
+        <h2 style="margin-top:20px;" id="test-page-title">उपलब्ध टेस्ट बॉक्स</h2>
+        <div class="grid-3" id="tests-grid"></div>
+    </div>
+
+    <div id="quiz-page" class="page">
+        <div class="card" style="text-align: left; cursor: default;">
+            <h3 id="quiz-question-title">प्रश्न यहाँ दिखाई देगा?</h3>
+            <div id="options-container" style="margin-top: 15px;"></div>
+            <div style="margin-top:20px;">
+                <button class="btn btn-success" onclick="submitQuiz()">टेस्ट सबमिट करें</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-page" class="page">
+        <div class="card" style="cursor: default;">
+            <h2 style="color: var(--success);">टेस्ट सफलतापूर्वक पूरा हुआ!</h2>
+            <h3 style="margin:20px 0;" id="score-text">आपका स्कोर: 0/0</h3>
+            <button class="btn btn-primary" onclick="toggleSummary()">उत्तर की व्याख्या / समरी देखें</button>
+            <button class="btn" style="background:#6b7280; color:white;" onclick="showPage('main-dashboard')">डैशबोर्ड पर जाएं</button>
+            
+            <div id="summary-section" style="display:none; text-align:left; margin-top:30px; border-top:2px dashed #ccc; padding-top:20px;">
+                <h3>प्रश्न पत्र समीक्षा (Summary)</h3>
+                <div id="summary-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="page">
+        <div style="display:flex; justify-content: space-between;">
+            <button class="btn btn-danger" onclick="showPage('main-dashboard')">← एडमिन पैनल से बाहर निकलें</button>
+            <button class="btn btn-primary" onclick="toggleAdminSettings()">⚙️ एडimen ID/पासवर्ड बदलें</button>
+        </div>
+
+        <div id="admin-settings-box" class="card" style="display:none; text-align:left; margin-top:15px; max-width:500px; cursor:default;">
+            <h3>एडमिन क्रेडेंशियल अपडेट करें</h3>
+            <div class="form-group" style="margin-top:10px;">
+                <label>नया एडमिन आईडी</label>
+                <input type="text" id="new-admin-id">
+            </div>
+            <div class="form-group">
+                <label>नया पासवर्ड</label>
+                <input type="password" id="new-admin-pass">
+            </div>
+            <button class="btn btn-success" onclick="updateAdminCredentials()">क्रेडेंशियल सेव करें</button>
+        </div>
+
+        <h2 style="margin-top:20px;">🔧 सिस्टम एडमिन कमांड सेंटर (CG TS)</h2>
+        
+        <div class="grid-2">
+            <div class="card" style="text-align:left; cursor: default;">
+                <h3>नया विषय (Subject) जोड़ें</h3>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>कोर्स चुनें</label>
+                    <select id="adm-sub-course">
+                        <option value="free">Free Test Series</option>
+                        <option value="recruitment">Assistant Teacher Recruitment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>विषय का नाम</label>
+                    <input type="text" id="adm-sub-name" placeholder="उदा. छत्तीसगढ़ सामान्य ज्ञान">
+                </div>
+                <button class="btn btn-primary" onclick="adminCreateSubject()">विषय जोड़ें</button>
+            </div>
+
+            <div class="card" style="text-align:left; cursor: default;">
+                <h3>विषय के आधार पर नया टेस्ट बॉक्स बनाएं</h3>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>विषय (Subject) चुनें</label>
+                    <select id="adm-test-subject"></select>
+                </div>
+                <div class="form-group">
+                    <label>टेस्ट का नाम</label>
+                    <input type="text" id="adm-test-name" placeholder="उदा. मॉक टेस्ट - 05">
+                </div>
+                <div class="form-group">
+                    <label>अपलोड का प्रकार (Question Type)</label>
+                    <select id="adm-upload-type" onchange="toggleUploadFields()">
+                        <option value="code">Code/JSON Format (ऑटोमेटिक जनरेट)</option>
+                        <option value="link">Direct Web Link (वेब लिंक)</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="upload-link-group" style="display:none;">
+                    <label>टेस्ट का वेब लिंक (URL Link)</label>
+                    <input type="text" id="adm-test-link" placeholder="https://example.com/quiz">
+                </div>
+
+                <div class="form-group" id="upload-code-group">
+                    <label>प्रश्न का कोड बॉक्स Format (नीचे दिए गए नियम अनुसार पेस्ट करें)</label>
+                    <textarea id="adm-test-code" rows="5" placeholder='{"q": "प्रश्न क्या है?", "o": ["A", "B", "C", "D"], "a": 0, "exp": "व्याख्या"}'></textarea>
+                    <small style="color: #666; display:block; margin-top:5px;">💡 Format: <code>{"q":"सवाल","o":["विकल्प1","विकल्प2","विकल्प3","विकल्प4"],"a":0,"exp":"व्याख्या"}</code> (Note: "a" में 0=पहला विकल्प, 1=दूसरा, आदि)</small>
+                </div>
+
+                <button class="btn btn-success" onclick="adminCreateTest()">नया टेस्ट लाइव करें</button>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:20px; text-align:left; cursor: default;">
+            <h3>छात्र यूजर मैनेजमेंट डेटाबेस (Approval/Block)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>नाम</th>
+                        <th>मोबाइल नंबर</th>
+                        <th>स्थिति (Status)</th>
+                        <th>कार्रवाई (Actions)</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-student-table"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- APP LOCALSTORAGE CONFIG ---
+    let adminCreds = JSON.parse(localStorage.getItem('cgts_admin_creds')) || { id: 'admin', pass: 'admin123' };
+    
+    let appData = JSON.parse(localStorage.getItem('lms_data_cgts_v2')) || {
+        courses: [
+            { id: 'free', name: 'Free Test Series', loginRequired: false, status: 'visible' },
+            { id: 'recruitment', name: 'Assistant Teacher Recruitment', loginRequired: true, status: 'visible' }
+        ],
+        subjects: [
+            { id: 'sub1', courseId: 'free', name: 'हिन्दी व्याकरण', status: 'visible' },
+            { id: 'sub2', courseId: 'recruitment', name: 'बाल विकास एवं शिक्षाशास्त्र (CDP)', status: 'visible' }
+        ],
+        tests: [
+            { id: 't1', subId: 'sub1', name: 'हिन्दी मॉक टेस्ट - 01', type: 'code', q: "संज्ञा के कितने भेद होते हैं?", o: ["3", "4", "5", "6"], a: 2, exp: "संज्ञा के मुख्यतः 5 भेद होते हैं: व्यक्तिवाचक, जातिवाचक, भाववाचक, समूहवाचक, और द्रव्यवाचक।" },
+            { id: 't2', subId: 'sub2', name: 'CDP कोर प्रैक्टिस - 01', type: 'code', q: "शिक्षण की सबसे प्रभावशाली विधि कौन सी है?", o: ["लेक्चर विधि", "खेल विधि", "प्रदर्शन विधि", "आगमन विधि"], a: 1, exp: "खेल विधि (Playway method) बच्चों के विकास के लिए सबसे उत्तम मानी जाती है।" }
+        ],
+        users: []
+    };
+
+    let currentUser = null;
+    let activeTest = null;
+
+    function saveToStorage() {
+        localStorage.setItem('lms_data_cgts_v2', JSON.stringify(appData));
+    }
+
+    // --- SECURITY PANEL GATE ---
+    function checkAdminAccess() {
+        showPage('admin-login-page');
+    }
+
+    function verifyAdminLogin() {
+        let idInput = document.getElementById('adm-login-id').value;
+        let passInput = document.getElementById('adm-login-pass').value;
+
+        if (idInput === adminCreds.id && passInput === adminCreds.pass) {
+            document.getElementById('adm-login-id').value = "";
+            document.getElementById('adm-login-pass').value = "";
+            showPage('admin-panel');
+        } else {
+            alert("गलत एडमिन आईडी या पासवर्ड! कृपया दोबारा जांचें।");
+        }
+    }
+
+    function toggleAdminSettings() {
+        let box = document.getElementById('admin-settings-box');
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateAdminCredentials() {
+        let newId = document.getElementById('new-admin-id').value;
+        let newPass = document.getElementById('new-admin-pass').value;
+
+        if (!newId || !newPass) return alert("कृपया दोनों फ़ील्ड भरें!");
+        
+        adminCreds.id = newId;
+        adminCreds.pass = newPass;
+        localStorage.setItem('cgts_admin_creds', JSON.stringify(adminCreds));
+        alert("एडमिन क्रेडेंशियल सफलतापूर्वक अपडेट हो गए हैं!");
+        toggleAdminSettings();
+    }
+
+    // --- NAVIGATION LOGIC ---
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        const targetPage = document.getElementById(pageId);
+        if(targetPage) targetPage.classList.add('active-page');
+        if(pageId === 'admin-panel') loadAdminDashboard();
+    }
+
+    function toggleUploadFields() {
+        let type = document.getElementById('adm-upload-type').value;
+        document.getElementById('upload-link-group').style.display = type === 'link' ? 'block' : 'none';
+        document.getElementById('upload-code-group').style.display = type === 'code' ? 'block' : 'none';
+    }
+
+    // --- USER LOGIN/REGISTRATION ---
+    function toggleAuth(isLogin) {
+        document.getElementById('auth-title').innerText = isLogin ? "छात्र लॉगिन" : "नया छात्र रजिस्ट्रेशन";
+        document.getElementById('login-form').style.display = isLogin ? "block" : "none";
+        document.getElementById('register-form').style.display = isLogin ? "none" : "block";
+    }
+
+    function registerUser() {
+        let name = document.getElementById('reg-name').value;
+        let mobile = document.getElementById('reg-mobile').value;
+        let pass = document.getElementById('reg-password').value;
+
+        if(!name || !mobile || !pass) return alert("सभी जानकारी भरना अनिवार्य है!");
+
+        appData.users.push({ name, mobile, pass, status: 'approved' });
+        saveToStorage();
+        alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
+        toggleAuth(true);
+    }
+
+    function loginUser() {
+        let mobile = document.getElementById('login-mobile').value;
+        let pass = document.getElementById('login-password').value;
+
+        let user = appData.users.find(u => u.mobile === mobile && u.pass === pass);
+        if(!user) return alert("गलत मोबाइल नंबर या पासवर्ड!");
+        if(user.status === 'blocked' || user.status === 'rejected') return alert("आपका अकाउंट एडमिन द्वारा ब्लॉक कर दिया गया है।");
+
+        currentUser = user;
+        document.getElementById('logout-btn').style.display = "block";
+        document.getElementById('student-welcome').innerText = `नमस्ते, ${user.name} 👋`;
+        showPage('student-dashboard');
+    }
+
+    function logoutUser() {
+        currentUser = null;
+        document.getElementById('logout-btn').style.display = "none";
+        showPage('main-dashboard');
+    }
+
+    // --- FLOW MANAGEMENT ---
+    function openCourse(courseId) {
+        if(courseId === 'recruitment' && !currentUser) {
+            showPage('login-page');
+            return;
+        }
+        let targetId = (courseId === 'recruitment' || courseId === 'recruitment_secured') ? 'recruitment' : 'free';
+        
+        document.getElementById('subject-page-title').innerText = `${targetId === 'free' ? 'मुफ्त कोर्स' : 'शिक्षक भर्ती कोर्स'} के विषय`;
+        let grid = document.getElementById('subjects-grid');
+        grid.innerHTML = "";
+
+        let filteredSubs = appData.subjects.filter(s => s.courseId === targetId);
+        if(filteredSubs.length === 0) {
+            grid.innerHTML = "<p style='padding:20px; color:#666;'>इस कोर्स में अभी कोई विषय उपलब्ध नहीं है।</p>";
+        } else {
+            filteredSubs.forEach(sub => {
+                grid.innerHTML += `<div class="card" style="border-top-color:#10b981;" onclick="openSubject('${sub.id}')"><h3>${sub.name}</h3></div>`;
+            });
+        }
+        showPage('subjects-page');
+    }
+
+    function goBackFromSubjects() {
+        if(currentUser) showPage('student-dashboard');
+        else showPage('main-dashboard');
+    }
+
+    function openSubject(subId) {
+        let grid = document.getElementById('tests-grid');
+        grid.innerHTML = "";
+        let filteredTests = appData.tests.filter(t => t.subId === subId);
+
+        if(filteredTests.length === 0) {
+            grid.innerHTML = "<p style='padding:20px; color:#666;'>इस विषय में अभी कोई टेस्ट लाइव नहीं है।</p>";
+        } else {
+            filteredTests.forEach((test, index) => {
+                grid.innerHTML += `
+                    <div class="card" style="border-top-color:#ef4444;" onclick="handleTestClick('${test.id}')">
+                        <h4>टेस्ट बॉक्स ${index + 1}</h4>
+                        <p style="margin-top:10px; font-weight:bold;">${test.name}</p>
+                    </div>`;
+            });
+        }
+        showPage('tests-page');
+    }
+
+    function handleTestClick(testId) {
+        let test = appData.tests.find(t => t.id === testId);
+        if (test.type === 'link') {
+            window.open(test.link, '_blank');
+        } else {
+            startQuiz(testId);
+        }
+    }
+
+    function startQuiz(testId) {
+        activeTest = appData.tests.find(t => t.id === testId);
+        document.getElementById('quiz-question-title').innerText = activeTest.q;
+        let optContainer = document.getElementById('options-container');
+        optContainer.innerHTML = "";
+
+        activeTest.o.forEach((opt, idx) => {
+            optContainer.innerHTML += `
+                <label class="option-box">
+                    <input type="radio" name="quiz-opt" value="${idx}"> ${opt}
+                </label>`;
+        });
+        showPage('quiz-page');
+    }
+
+    function submitQuiz() {
+        let selected = document.querySelector('input[name="quiz-opt"]:checked');
+        if(!selected) return alert("कृपया कोई एक विकल्प अवश्य चुनें!");
+
+        let selectedAns = parseInt(selected.value);
+        let score = (selectedAns === activeTest.a) ? 1 : 0;
+
+        document.getElementById('score-text').innerText = `आपका कुल स्कोर: ${score} / 1`;
+        
+        let summaryContent = document.getElementById('summary-content');
+        summaryContent.innerHTML = `
+            <div style="margin-top:15px; padding:15px; border-radius:8px; background:#f9fafb;">
+                <p><strong>सवाल:</strong> ${activeTest.q}</p>
+                <p style="color:${score === 1 ? 'green':'red'}"><strong>आपका चुना हुआ उत्तर:</strong> ${activeTest.o[selectedAns]}</p>
+                <p style="color:green"><strong>सही उत्तर:</strong> ${activeTest.o[activeTest.a]}</p>
+                <p style="margin-top:10px; font-style:italic; color:#555;"><strong>उत्तर की व्याख्या:</strong> ${activeTest.exp}</p>
+            </div>`;
+
+        showPage('result-page');
+    }
+
+    function toggleSummary() {
+        let sec = document.getElementById('summary-section');
+        sec.style.display = sec.style.display === "none" ? "block" : "none";
+    }
+
+    // --- ADMIN BUSINESS LOGIC ---
+    function loadAdminDashboard() {
+        // Dropdown populate for subjects
+        let subSelect = document.getElementById('adm-test-subject');
+        subSelect.innerHTML = "";
+        appData.subjects.forEach(s => {
+            subSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+        });
+
+        // User table loader
+        let tBody = document.getElementById('admin-student-table');
+        tBody.innerHTML = "";
+        if(appData.users.length === 0) {
+            tBody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>कोई छात्र रिकॉर्ड नहीं मिला।</td></tr>";
+        } else {
+            appData.users.forEach((u, i) => {
+                tBody.innerHTML += `
+                    <tr>
+                        <td>${u.name}</td>
+                        <td>${u.mobile}</td>
+                        <td><span class="badge" style="background:#4f46e5; margin:0;">${u.status.toUpperCase()}</span></td>
+                        <td>
+                            <button class="btn btn-success" style="padding:4px 8px; font-size:12px;" onclick="updateUserStatus(${i}, 'approved')">Approve</button>
+                            <button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="updateUserStatus(${i}, 'blocked')">Block</button>
+                        </td>
+                    </tr>`;
+                });
+        }
+    }
+
+    function adminCreateSubject() {
+        let courseId = document.getElementById('adm-sub-course').value;
+        let name = document.getElementById('adm-sub-name').value;
+        if(!name) return alert("विषय का नाम भरें!");
+
+        let id = 'sub_' + Date.now();
+        appData.subjects.push({ id, courseId, name, status: 'visible' });
+        saveToStorage();
+        alert("नया विषय सफलतापूर्वक जोड़ दिया गया है!");
+        document.getElementById('adm-sub-name').value = "";
+        loadAdminDashboard();
+    }
+
+    function adminCreateTest() {
+        let subId = document.getElementById('adm-test-subject').value;
+        let testName = document.getElementById('adm-test-name').value;
+        let uploadType = document.getElementById('adm-upload-type').value;
+
+        if(!testName) return alert("टेस्ट का नाम दर्ज करें!");
+
+        let newTestObj = { id: 'test_' + Date.now(), subId: subId, name: testName, type: uploadType };
+
+        if (uploadType === 'link') {
+            let linkVal = document.getElementById('adm-test-link').value;
+            if(!linkVal) return alert("कृपया वेब लिंक पेस्ट करें!");
+            newTestObj.link = linkVal;
+        } else {
+            let codeVal = document.getElementById('adm-test-code').value;
+            try {
+                let parsed = JSON.parse(codeVal);
+                newTestObj.q = parsed.q;
+                newTestObj.o = parsed.o;
+                newTestObj.a = parseInt(parsed.a);
+                newTestObj.exp = parsed.exp;
+            } catch(e) {
+                return alert("गलत कोड फ़ॉर्मेट! कृपया कोड बॉक्स के नियमों का पालन करें।");
+            }
+        }
+
+        appData.tests.push(newTestObj);
+        saveToStorage();
+        alert("बधाई हो! नया टेस्ट ऑटोमेटिक अपडेट हो गया है।");
+        document.getElementById('adm-test-name').value = "";
+        document.getElementById('adm-test-code').value = "";
+        document.getElementById('adm-test-link').value = "";
+    }
+
+    function updateUserStatus(index, newStatus) {
+        appData.users[index].status = newStatus;
+        saveToStorage();
+        loadAdminDashboard();
+    }
+</script>
+</body>
+</html>
